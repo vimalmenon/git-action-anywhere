@@ -3,10 +3,10 @@ on:
     outputs:
       release:
         description: "An output from the reusable workflow"
-        value: ${{ jobs.Prepare.outputs.selected }}
+        value: ${{ jobs.prepare.outputs.selected }}
 
 jobs:
-  Prepare:
+  prepare:
     name: Prepare release
     runs-on: ubuntu-latest
     outputs:
