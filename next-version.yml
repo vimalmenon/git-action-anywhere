@@ -1,0 +1,14 @@
+
+
+permissions:
+  contents: write
+
+jobs:
+  # Single deploy job since we're just deploying
+  Prepare:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Echo Test"
+        run: |
+          echo "this is test"
