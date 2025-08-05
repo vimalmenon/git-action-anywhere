@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    outputs:
+      release:
+        description: "An output from the reusable workflow"
+        value: ${{ jobs.Prepare.outputs.selected }}
 
 jobs:
   Prepare:
