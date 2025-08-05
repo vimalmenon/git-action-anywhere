@@ -1,9 +1,24 @@
 on:
   workflow_call:
+    inputs:
+      release_type:
+        description: "Type of release (patch, minor, major)"
+        required: false
+        default: "patch"
+        type: string
     outputs:
       release:
-        description: "An output from the reusable workflow"
+        description: "The selected next release version"
         value: ${{ jobs.prepare.outputs.selected }}
+      patch:
+        description: "Next patch version"
+        value: ${{ jobs.prepare.outputs.patch }}
+      minor:
+        description: "Next minor version"
+        value: ${{ jobs.prepare.outputs.minor }}
+      major:
+        description: "Next major version"
+        value: ${{ jobs.prepare.outputs.major }}
 
 jobs:
   prepare:
@@ -38,12 +53,22 @@ jobs:
           echo "minor=${{ steps.semvers.outputs.minor }}" >> $GITHUB_OUTPUT
           echo "major=${{ steps.semvers.outputs.major }}" >> $GITHUB_OUTPUT
           echo "date=$(date +'%d-%b-%Y')" >> $GITHUB_OUTPUT
-          selected="${{ steps.semvers.outputs.patch }}"
-          if [[ "${{ github.event.inputs.Release }}" == "Patch" ]]; then
-            selected="${{ steps.semvers.outputs.patch }}"
-          elif [[ "${{ github.event.inputs.Release }}" == "Minor" ]]; then
-            selected="${{ steps.semvers.outputs.minor }}"
-          elif [[ "${{ github.event.inputs.Release }}" == "Major" ]]; then
-            selected="${{ steps.semvers.outputs.major }}"
-          fi
+          
+          # Select version based on input parameter
+          case "${{ inputs.release_type }}" in
+            "patch")
+              selected="${{ steps.semvers.outputs.patch }}"
+              ;;
+            "minor")
+              selected="${{ steps.semvers.outputs.minor }}"
+              ;;
+            "major")
+              selected="${{ steps.semvers.outputs.major }}"
+              ;;
+            *)
+              selected="${{ steps.semvers.outputs.patch }}"
+              ;;
+          esac
+          
           echo "selected=$selected" >> $GITHUB_OUTPUT
+          echo "Selected release version: $selected"
