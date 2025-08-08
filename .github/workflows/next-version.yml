@@ -1,3 +1,5 @@
+name: Get next version
+
 on:
   workflow_call:
     inputs:
