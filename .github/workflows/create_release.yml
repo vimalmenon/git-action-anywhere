@@ -1,0 +1,28 @@
+name: Creates a release
+
+on:
+  workflow_call:
+    inputs:
+      version_number:
+        description: "Version number for the release"
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ inputs.version_number }}
+          name: Release ${{ inputs.version_number }}
+          files: |
+            path/to/your/artifact.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Show released version
+        run: echo "Release created with tag v${{ inputs.version_number }}"
